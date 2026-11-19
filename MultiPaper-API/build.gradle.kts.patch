@@ -1,13 +1,12 @@
 --- a/purpur-api/build.gradle.kts
 +++ b/purpur-api/build.gradle.kts
-@@ -107,7 +_,7 @@
+@@ -107,4 +107,4 @@
      testRuntimeOnly("org.junit.platform:junit-platform-launcher:6.0.3")
-
+ 
      // checkstyle
 -    checkstyle(project(":purpur-checkstyle"))
 +    // checkstyle(project(":purpur-checkstyle")) // MultiPaper - checkstyle project is not included
-
-@@ -121,17 +_,21 @@
+@@ -121,10 +121,22 @@
      main {
          java {
              srcDir(generatedDir)
