@@ -1,7 +1,7 @@
 plugins {
     java
     `maven-publish`
-    id("com.gradleup.shadow") version "9.2.2"
+    id("com.gradleup.shadow") version "9.2.2" apply false
     id("io.papermc.paperweight.patcher") version "2.0.0-beta.24"
 }
 
@@ -21,17 +21,18 @@ paperweight {
             patchFile = file("MultiPaper-Server/build.gradle.kts.patch")
         }
 
-        patchDir("multipaperApi") {
+        // Apply MultiPaper's API changes to Paper's API repository, then compile
+        // both the Paper and Purpur API source trees in MultiPaper-API.
+        patchRepo("paperApi") {
+            upstreamPath = "paper-api"
+            patchesDir = file("patches/api")
+            outputDir = file("paper-api")
+        }
+        patchDir("purpurApi") {
             upstreamPath = "purpur-api"
             excludes = listOf("build.gradle.kts", "build.gradle.kts.patch", "paper-patches")
-            patchesDir = file("patches/api")
-            outputDir = file("MultiPaper-API")
-        }
-        patchDir("multipaperServer") {
-            upstreamPath = "purpur-server"
-            excludes = listOf("build.gradle.kts", "build.gradle.kts.patch", "paper-patches", "minecraft-patches")
-            patchesDir = file("patches/server")
-            outputDir = file("MultiPaper-Server")
+            patchesDir = file("patches/purpur-api")
+            outputDir = file("purpur-api")
         }
     }
 }
@@ -51,6 +52,7 @@ subprojects {
     tasks.withType<JavaCompile>().configureEach {
         options.encoding = Charsets.UTF_8.name()
         options.release = 25
+        options.isFork = true
     }
     tasks.withType<Javadoc>().configureEach {
         options.encoding = Charsets.UTF_8.name()
