@@ -5,7 +5,7 @@
 **MultiPaper is in public beta.** Most features work for most players most of
 the time, however things can occasionally break.
 
-1.20.1 [Purpur](https://github.com/PurpurMC/Purpur) fork that enables a server admin
+26.3 [Purpur](https://github.com/PurpurMC/Purpur) fork that enables a server admin
 to scale a single world across multiple servers. Multiple MultiPaper servers run
 the same world and use a MultiPaper-Master to coordinate with each other and
 store server data. While the MultiPaper-Master is usually run as a standalone
@@ -207,13 +207,13 @@ Or in your pom.xml:
 Requirements:
 - You need `git` installed, with a configured user name and email. 
    On windows you need to run from git bash.
-- You need `jdk` 17+ installed to compile (and `jre` 17+ to run)
+- You need `JDK` 25+ installed to compile (and `JRE` 25+ to run)
 
 Build instructions:
-1. Patch paper with: `./gradlew applyPatches`
-2. Build the multipaper jars with: `./gradlew shadowjar createReobfPaperclipJar`
-3. Get the multipaper jar from `build/libs`
-4. Get the multipaper-master jar from `MultiPaper-Master/build/libs`
+1. Apply the Paper, Purpur, and MultiPaper patches with: `./gradlew applyAllPatches`
+2. Build the MultiPaper server and master with: `./gradlew createPaperclipJar :multipaper-master:shadowJar`
+3. Get the MultiPaper server Paperclip jar from `MultiPaper-Server/build/libs`
+4. Get the MultiPaper-Master jar from `MultiPaper-Master/build/libs`
 
 ## Publishing to maven local
 Publish to your local maven repository with: `./gradlew publishToMavenLocal`
