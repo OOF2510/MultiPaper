@@ -60,7 +60,7 @@
 -            "Brand-Id" to "purpurmc:purpur", // Purpur
 -            "Brand-Name" to "Purpur", // Purpur
 +            "Specification-Vendor" to "MultiPaper Team", // MultiPaper
-+            "Brand-Id" to "puregero:multipaper", // MultiPaper
++            "Brand-Id" to "purpurmc:purpur", // Purpur - retain Purpur compatibility
 +            "Brand-Name" to "MultiPaper", // MultiPaper
              "Build-Number" to (build ?: ""),
 @@ -202,4 +202,4 @@
