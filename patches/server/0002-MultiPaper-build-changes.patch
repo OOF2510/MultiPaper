@@ -30,19 +30,6 @@ index 99597258e8e88cd9e2c901c4ac3ff7faeeabee2b..2fb1e86a62488f54dcdf5144a4911794
          Properties properties = new Properties();
  
          if (stream != null) {
-diff --git a/src/main/java/org/purpurmc/purpur/PurpurConfig.java b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
-index 3633574e112f217b412217dd243a631dc4e9c40c..de98d81099452da420edbf5643e51342f4167910 100644
---- a/src/main/java/org/purpurmc/purpur/PurpurConfig.java
-+++ b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
-@@ -231,7 +231,7 @@ public class PurpurConfig {
-         deathMessageOnlyBroadcastToAffectedPlayer = getBoolean("settings.broadcasts.death.only-broadcast-to-affected-player", deathMessageOnlyBroadcastToAffectedPlayer);
-     }
- 
--    public static String serverModName = "Purpur";
-+    public static String serverModName = "MultiPaper"; // MultiPaper
-     private static void serverModName() {
-         serverModName = getString("settings.server-mod-name", serverModName);
-     }
 diff --git a/src/main/java/org/spigotmc/WatchdogThread.java b/src/main/java/org/spigotmc/WatchdogThread.java
 index dbd502761ff6e6efb252bb41376a7ff028c73895..1017d487a25c33ee8fd26920cb43b90ea093d158 100644
 --- a/src/main/java/org/spigotmc/WatchdogThread.java
