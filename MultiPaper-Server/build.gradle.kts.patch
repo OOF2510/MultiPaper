@@ -47,6 +47,22 @@
 -    implementation(project(":purpur-api")) // Purpur
 +    implementation(project(":multipaper-api")) // MultiPaper
 +    implementation(project(":multipaper-mastermessagingprotocol"))
+@@ -175,10 +175,10 @@
+             "Main-Class" to "org.bukkit.craftbukkit.Main",
+-            "Implementation-Title" to "Purpur", // Purpur
++            "Implementation-Title" to "MultiPaper", // MultiPaper
+             "Implementation-Version" to implementationVersion,
+             "Implementation-Vendor" to date,
+-            "Specification-Title" to "Purpur", // Purpur
++            "Specification-Title" to "MultiPaper", // MultiPaper
+             "Specification-Version" to project.version,
+-            "Specification-Vendor" to "Purpur Team", // Purpur
+-            "Brand-Id" to "purpurmc:purpur", // Purpur
+-            "Brand-Name" to "Purpur", // Purpur
++            "Specification-Vendor" to "MultiPaper Team", // MultiPaper
++            "Brand-Id" to "puregero:multipaper", // MultiPaper
++            "Brand-Name" to "MultiPaper", // MultiPaper
+             "Build-Number" to (build ?: ""),
 @@ -202,4 +202,4 @@
      implementation("me.lucko:spark-paper:1.10.191")
  
