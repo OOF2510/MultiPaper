@@ -6,24 +6,39 @@ Subject: [PATCH] Rebrand watchdog messages for MultiPaper 26.3
 diff --git a/src/main/java/org/spigotmc/WatchdogThread.java b/src/main/java/org/spigotmc/WatchdogThread.java
 --- a/src/main/java/org/spigotmc/WatchdogThread.java
 +++ b/src/main/java/org/spigotmc/WatchdogThread.java
-@@ -78,1 +78,1 @@
+@@ -77,3 +77,3 @@
+                     logger.log(Level.SEVERE, "------------------------------");
 -                    logger.log(Level.SEVERE, "The server has stopped responding! This is (probably) not a Purpur bug."); // Paper // Purpur - Rebrand
 +                    logger.log(Level.SEVERE, "The server has stopped responding! This is (probably) not a MultiPaper bug."); // Paper // Purpur // MultiPaper
-@@ -83,1 +83,1 @@
+                     logger.log(Level.SEVERE, "If you see a plugin in the Server thread dump below, then please report it to that author");
+@@ -82,5 +82,5 @@
+                     logger.log(Level.SEVERE, "\t If this is the case, consider increasing timeout-time in spigot.yml but note that this will replace the crash with LARGE lag spikes");
 -                    logger.log(Level.SEVERE, "If you are unsure or still think this is a Purpur bug, please report this to https://github.com/PurpurMC/Purpur/issues"); // Purpur - Rebrand
 +                    logger.log(Level.SEVERE, "If you are unsure or still think this is a MultiPaper bug, please report this to https://github.com/MultiPaper/MultiPaper/issues"); // Purpur // MultiPaper
-@@ -85,1 +85,1 @@
+                     logger.log(Level.SEVERE, "Be sure to include ALL relevant console errors and Minecraft crash reports");
 -                    logger.log(Level.SEVERE, "Purpur version: " + Bukkit.getServer().getVersion()); // Purpur - Rebrand
 +                    logger.log(Level.SEVERE, "MultiPaper version: " + Bukkit.getServer().getVersion()); // Purpur // MultiPaper
-@@ -105,1 +105,1 @@
+                     
+@@ -103,3 +103,3 @@
+                     // Paper end
+                 } else {
 -                    logger.log(Level.SEVERE, "--- DO NOT REPORT THIS TO PURPUR - THIS IS NOT A BUG OR A CRASH  - " + Bukkit.getServer().getVersion() + " ---"); // Purpur - Rebrand
 +                    logger.log(Level.SEVERE, "--- DO NOT REPORT THIS TO MULTIPAPER - THIS IS NOT A BUG OR A CRASH  - " + Bukkit.getServer().getVersion() + " ---"); // Purpur // MultiPaper
-@@ -110,1 +110,1 @@
+                     logger.log(Level.SEVERE, "The server has not responded for " + (currentTime - lastTick) / 1000 + " seconds! Creating thread dump");
+@@ -108,3 +108,3 @@
+                 // Paper end - Different message for short timeout
+                 logger.log(Level.SEVERE, "------------------------------");
 -                logger.log(Level.SEVERE, "Server thread dump (Look for plugins here before reporting to Purpur!):"); // Paper // Purpur - Rebrand
 +                logger.log(Level.SEVERE, "Server thread dump (Look for plugins here before reporting to MultiPaper!):"); // Paper // Purpur // MultiPaper
-@@ -123,1 +123,1 @@
+                 FeatureHooks.dumpAllChunkLoadInfo(MinecraftServer.getServer(), isLongTimeout); // Paper - log detailed tick information
+@@ -120,3 +120,3 @@
+                     for (ThreadInfo thread : threads) {
+                         WatchdogThread.dumpThread(thread, logger);
+                     }
+                 } else {
 -                    logger.log(Level.SEVERE, "--- DO NOT REPORT THIS TO PURPUR - THIS IS NOT A BUG OR A CRASH ---"); // Purpur - Rebrand
 +                    logger.log(Level.SEVERE, "--- DO NOT REPORT THIS TO MULTIPAPER - THIS IS NOT A BUG OR A CRASH ---"); // Purpur // MultiPaper
+                 }
 
 -- 
 2.51.0
