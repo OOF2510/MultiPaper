@@ -39,7 +39,7 @@
 +        resources { srcDir("../purpur-server/src/test/resources") } // MultiPaper
      }
  }
-  val log4jPlugins = sourceSets.create("log4jPlugins") {
+ val log4jPlugins = sourceSets.create("log4jPlugins") {
 +    java { srcDir("../paper-server/src/log4jPlugins/java") }
  }
 @@ -146,2 +146,3 @@
@@ -47,7 +47,7 @@
 -    implementation(project(":purpur-api")) // Purpur
 +    implementation(project(":multipaper-api")) // MultiPaper
 +    implementation(project(":multipaper-mastermessagingprotocol"))
-@@ -202,3 +202,3 @@
+@@ -202,4 +202,4 @@
      implementation("me.lucko:spark-paper:1.10.191")
  
 -    checkstyle(project(":purpur-checkstyle"))
