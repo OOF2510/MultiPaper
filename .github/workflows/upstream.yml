@@ -2,43 +2,57 @@ name: Update Upstream
 
 on:
   schedule:
-    - cron: '0 15 * * *' # Once a day at 5pm GMT+2
-  workflow_dispatch: # on button click
+    - cron: "0 15 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   upstream:
-
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Git Repository
         uses: actions/checkout@v4
-      - name: Set up JDK
+      - name: Set up JDK 25
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
-          cache: 'gradle'
-          distribution: 'temurin'
+          distribution: temurin
+          java-version: "25"
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
       - name: Configure Git User Details
-        run: git config --global user.email "actions@github.com" && git config --global user.name "Github Actions"
-      - name: Update Upstream Commit Hash
-        run: ./gradlew purpurRefLatest --stacktrace
-      - name: Apply Patches
-        run: ./gradlew applyPatches --stacktrace
-      - name: Build Paperclip jar
-        run: ./gradlew jar createReobfPaperclipJar --stacktrace
-      - name: Rebuild Patches
-        run: ./gradlew rebuildPatches --stacktrace
-      - name: Upload Paperclip jar
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "Github Actions"
+      - name: Update Purpur 26.3 ref
+        run: ./purpurRefLatest.sh
+      - name: Apply patches
+        run: ./gradlew applyAllPatches --stacktrace
+      - name: Build MultiPaper
+        run: ./gradlew createPaperclipJar :multipaper-master:shadowJar --stacktrace
+      - name: Rebuild server patches
+        run: ./gradlew rebuildAllServerPatches --stacktrace
+      - name: Rebuild API patches
+        run: ./gradlew rebuildPurpurApiPatches rebuildPaperApiPatches --stacktrace
+      - name: Upload server jar
         uses: actions/upload-artifact@v4
         with:
-          name: multipaper.jar
-          path: build/libs/multipaper-paperclip-*-reobf.jar
+          name: multipaper-server
+          path: MultiPaper-Server/build/libs/multipaper-paperclip-*.jar
+          if-no-files-found: error
+      - name: Upload master jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: multipaper-master
+          path: MultiPaper-Master/build/libs/*all.jar
+          if-no-files-found: error
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: Update Upstream
+          commit-message: Update Purpur 26.3 upstream
           branch: update-upstream
           delete-branch: true
-          title: 'Update Upstream'
-          body: ''
+          title: Update Purpur 26.3 upstream
+          body: "Refresh the Purpur 26.3 base, rebuild all MultiPaper patches, and verify the server/master build."

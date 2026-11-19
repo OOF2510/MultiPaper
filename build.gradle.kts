@@ -1,52 +1,69 @@
-import io.papermc.paperweight.util.*
-import io.papermc.paperweight.util.constants.*
-
 plugins {
     java
     `maven-publish`
-    id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("io.papermc.paperweight.patcher") version "1.5.7-SNAPSHOT"
+    id("com.gradleup.shadow") version "9.2.2" apply false
+    id("io.papermc.paperweight.patcher") version "2.0.0-beta.24"
 }
 
-repositories {
-    mavenCentral()
-    maven("https://repo.papermc.io/repository/maven-public/") {
-        content { onlyForConfigurations(PAPERCLIP_CONFIG) }
-    }
-}
+paperweight {
+    upstreams.register("purpur") {
+        repo = github("PurpurMC", "Purpur")
+        ref = providers.gradleProperty("purpurRef")
 
-dependencies {
-    remapper("net.fabricmc:tiny-remapper:0.8.6:fat")
-    decompiler("net.minecraftforge:forgeflower:2.0.627.2")
-    paperclip("io.papermc:paperclip:3.0.3")
-}
+        patchFile {
+            path = "purpur-api/build.gradle.kts"
+            outputFile = file("MultiPaper-API/build.gradle.kts")
+            patchFile = file("MultiPaper-API/build.gradle.kts.patch")
+        }
+        patchFile {
+            path = "purpur-server/build.gradle.kts"
+            outputFile = file("MultiPaper-Server/build.gradle.kts")
+            patchFile = file("MultiPaper-Server/build.gradle.kts.patch")
+        }
 
-allprojects {
-    apply(plugin = "java")
-    apply(plugin = "maven-publish")
-
-    java {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(17))
+        // Apply MultiPaper's API changes to Paper's API repository, then compile
+        // both the Paper and Purpur API source trees in MultiPaper-API.
+        patchRepo("paperApi") {
+            upstreamPath = "paper-api"
+            patchesDir = file("patches/api")
+            outputDir = file("paper-api")
+        }
+        patchDir("purpurApi") {
+            upstreamPath = "purpur-api"
+            excludes = listOf("build.gradle.kts", "build.gradle.kts.patch", "paper-patches")
+            patchesDir = file("patches/purpur-api")
+            outputDir = file("purpur-api")
         }
     }
 }
 
+val paperMavenPublicUrl = "https://repo.papermc.io/repository/maven-public/"
+
 subprojects {
-    tasks.withType<JavaCompile> {
-        options.encoding = Charsets.UTF_8.name()
-        options.release.set(17)
+    apply(plugin = "java-library")
+    apply(plugin = "maven-publish")
+
+    extensions.configure<JavaPluginExtension> {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(25)
+        }
     }
-    tasks.withType<Javadoc> {
+
+    tasks.withType<JavaCompile>().configureEach {
+        options.encoding = Charsets.UTF_8.name()
+        options.release = 25
+        options.isFork = true
+    }
+    tasks.withType<Javadoc>().configureEach {
         options.encoding = Charsets.UTF_8.name()
     }
-    tasks.withType<ProcessResources> {
+    tasks.withType<ProcessResources>().configureEach {
         filteringCharset = Charsets.UTF_8.name()
     }
 
     repositories {
         mavenCentral()
-        maven("https://repo.papermc.io/repository/maven-public/")
+        maven(paperMavenPublicUrl)
         maven("https://oss.sonatype.org/content/groups/public/")
         maven("https://ci.emc.gs/nexus/content/groups/aikar/")
         maven("https://repo.aikar.co/content/groups/aikar")
@@ -56,74 +73,8 @@ subprojects {
     }
 }
 
-paperweight {
-    serverProject.set(project(":multipaper-server"))
-
-    remapRepo.set("https://repo.papermc.io/repository/maven-public/")
-    decompileRepo.set("https://repo.papermc.io/repository/maven-public/")
-
-    useStandardUpstream("Purpur") {
-        url.set(github("PurpurMC", "Purpur"))
-        ref.set(providers.gradleProperty("purpurRef"))
-        
-        withStandardPatcher {
-            apiSourceDirPath.set("Purpur-API") 
-            apiPatchDir.set(layout.projectDirectory.dir("patches/api"))
-            apiOutputDir.set(layout.projectDirectory.dir("MultiPaper-API"))
-
-            serverSourceDirPath.set("Purpur-Server")
-            serverPatchDir.set(layout.projectDirectory.dir("patches/server"))
-            serverOutputDir.set(layout.projectDirectory.dir("MultiPaper-Server"))
-        }
-    }
-
-    tasks.register("purpurRefLatest") {
-        // Update the paperRef in gradle.properties to be the latest commit
-        val tempDir = layout.cacheDir("purpurRefLatest");
-        val file = "gradle.properties";
-        
-        doFirst {
-            data class GithubCommit(
-                    val sha: String
-            )
-
-            val purpurLatestCommitJson = layout.cache.resolve("purpurLatestCommit.json");
-            download.get().download("https://api.github.com/repos/PurpurMC/Purpur/commits/ver/1.20.1", purpurLatestCommitJson);
-            val purpurLatestCommit = gson.fromJson<paper.libs.com.google.gson.JsonObject>(purpurLatestCommitJson)["sha"].asString;
-
-            copy {
-                from(file)
-                into(tempDir)
-                filter { line: String ->
-                    line.replace("purpurRef = .*".toRegex(), "purpurRef = $purpurLatestCommit")
-                }
-            }
-        }
-
-        doLast {
-            copy {
-                from(tempDir.file("gradle.properties"))
-                into(project.file(file).parent)
-            }
-        }
-    }
-}
-
-tasks.generateDevelopmentBundle {
-    apiCoordinates.set("puregero.multipaper:MultiPaper-API")
-    mojangApiCoordinates.set("io.papermc.paper:paper-mojangapi")
-    libraryRepositories.set(
-        listOf(
-            "https://repo.maven.apache.org/maven2/",
-            "https://repo.papermc.io/repository/maven-public/",
-            "https://jitpack.io"
-        )
-    )
-}
-publishing {
-    publications.create<MavenPublication>("devBundle") {
-        artifact(tasks.generateDevelopmentBundle) {
-            artifactId = "dev-bundle"
-        }
+tasks.register("printMinecraftVersion") {
+    doLast {
+        println(providers.gradleProperty("mcVersion").get().trim())
     }
 }

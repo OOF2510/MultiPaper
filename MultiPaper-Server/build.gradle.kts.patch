@@ -1,0 +1,71 @@
+--- a/purpur-server/build.gradle.kts
++++ b/purpur-server/build.gradle.kts
+@@ -37,6 +37,24 @@
+     activeFork = purpur
+     // Purpur end - Rebrand
+ 
++    // MultiPaper start
++    val multipaper = forks.register("multipaper") {
++        forks = purpur
++        upstream.patchRepo("paperServer") {
++            upstreamRepo = purpur.patchedRepo("paperServer")
++            patchesDir = rootDirectory.dir("patches/server")
++            outputDir = rootDirectory.dir("paper-server")
++        }
++        upstream.patchDir("purpurServer") {
++            upstreamPath = "purpur-server"
++            excludes = setOf("src/minecraft", "paper-patches", "minecraft-patches", "build.gradle.kts", "build.gradle.kts.patch")
++            patchesDir = rootDirectory.dir("patches/purpur-server")
++            outputDir = rootDirectory.dir("purpur-server")
++        }
++    }
++    activeFork = multipaper
++    // MultiPaper end
++
+     /*updatingMinecraft { // Purpur start - Rebrand - we don't need this
+         //oldPaperCommit = "e5fe71723e2ffde7cc9fafc085ac3bb73e63175e"
+     }*/ // Purpur end - Rebrand - we don't need this
+@@ -114,11 +114,16 @@
+     main {
+         java { srcDir("../paper-server/src/main/java") }
+         resources { srcDir("../paper-server/src/main/resources") }
++        java { srcDir("../purpur-server/src/main/java") } // MultiPaper
++        resources { srcDir("../purpur-server/src/main/resources") } // MultiPaper
+     }
+     test {
+         java { srcDir("../paper-server/src/test/java") }
+         resources { srcDir("../paper-server/src/test/resources") }
++        java { srcDir("../purpur-server/src/test/java") } // MultiPaper
++        resources { srcDir("../purpur-server/src/test/resources") } // MultiPaper
+     }
+ }
+ val log4jPlugins = sourceSets.create("log4jPlugins") {
++    java { srcDir("../paper-server/src/log4jPlugins/java") }
+ }
+@@ -146,2 +146,3 @@
+ dependencies {
+-    implementation(project(":purpur-api")) // Purpur
++    implementation(project(":multipaper-api")) // MultiPaper
++    implementation(project(":multipaper-mastermessagingprotocol"))
+@@ -175,10 +175,10 @@
+             "Main-Class" to "org.bukkit.craftbukkit.Main",
+-            "Implementation-Title" to "Purpur", // Purpur
++            "Implementation-Title" to "MultiPaper", // MultiPaper
+             "Implementation-Version" to implementationVersion,
+             "Implementation-Vendor" to date,
+-            "Specification-Title" to "Purpur", // Purpur
++            "Specification-Title" to "MultiPaper", // MultiPaper
+             "Specification-Version" to project.version,
+-            "Specification-Vendor" to "Purpur Team", // Purpur
+-            "Brand-Id" to "purpurmc:purpur", // Purpur
+-            "Brand-Name" to "Purpur", // Purpur
++            "Specification-Vendor" to "MultiPaper Team", // MultiPaper
++            "Brand-Id" to "purpurmc:purpur", // Purpur - retain Purpur compatibility
++            "Brand-Name" to "MultiPaper", // MultiPaper
+             "Build-Number" to (build ?: ""),
+@@ -202,4 +202,4 @@
+     implementation("me.lucko:spark-paper:1.10.191")
+ 
+-    checkstyle(project(":purpur-checkstyle"))
++    // checkstyle(project(":purpur-checkstyle")) // MultiPaper - checkstyle project is not included
+ }
