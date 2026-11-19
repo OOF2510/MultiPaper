@@ -9,10 +9,10 @@ diff --git a/src/main/java/org/spigotmc/WatchdogThread.java b/src/main/java/org/
 @@ -78,1 +78,1 @@
 -                    logger.log(Level.SEVERE, "The server has stopped responding! This is (probably) not a Purpur bug."); // Paper // Purpur - Rebrand
 +                    logger.log(Level.SEVERE, "The server has stopped responding! This is (probably) not a MultiPaper bug."); // Paper // Purpur // MultiPaper
-@@ -84,1 +84,1 @@
+@@ -83,1 +83,1 @@
 -                    logger.log(Level.SEVERE, "If you are unsure or still think this is a Purpur bug, please report this to https://github.com/PurpurMC/Purpur/issues"); // Purpur - Rebrand
 +                    logger.log(Level.SEVERE, "If you are unsure or still think this is a MultiPaper bug, please report this to https://github.com/MultiPaper/MultiPaper/issues"); // Purpur // MultiPaper
-@@ -86,1 +86,1 @@
+@@ -85,1 +85,1 @@
 -                    logger.log(Level.SEVERE, "Purpur version: " + Bukkit.getServer().getVersion()); // Purpur - Rebrand
 +                    logger.log(Level.SEVERE, "MultiPaper version: " + Bukkit.getServer().getVersion()); // Purpur // MultiPaper
 @@ -105,1 +105,1 @@
